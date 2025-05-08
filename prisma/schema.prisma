@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(255)
+  email          String           @unique(map: "email") @db.VarChar(255)
+  password       String           @db.VarChar(255)
+  conversion     Conversion[]
+  favoritesCoins FavoritesCoins[]
+
+  @@map("users")
+}
+
+model Conversion {
+  id                Int       @id @default(autoincrement())
+  coinName          String    @map("coin_name") @db.VarChar(255)
+  coinAmount        Decimal   @map("coin_amount") @db.Decimal(18, 8)
+  convertedValueBRL Decimal   @map("converted_value_brl") @db.Decimal(10, 2)
+  convertedValueUsd Decimal   @map("converted_value_usd") @db.Decimal(10, 2)
+  userId            Int
+  createdAt         DateTime @default(now()) @db.Timestamp(0)
+  user              User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_conversion_fk")
+
+  @@index([userId], map: "user_conversion_fk")
+  @@map("conversions")
+}
+
+model FavoritesCoins {
+  id         Int    @id @default(autoincrement())
+  coinSymbol String @map("coin_symbol") @db.VarChar(255)
+  userId     Int    @map("user_id")
+  user       User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_favorites_coins_fk")
+
+  @@index([userId], map: "user_favorites_coins_fk")
+  @@map("favorites_coins")
+}
