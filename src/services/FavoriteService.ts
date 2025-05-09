@@ -20,7 +20,9 @@ export default class FavoriteService {
             await this.db.favoritesCoins.create({
                 data: {
                     coinSymbol: body.coinSymbol,
-                    userId: user.id
+                    userId: user.id,
+                    coinName: body.coinName,
+                    image: body.image
                 }
             })
         } else {
@@ -56,6 +58,7 @@ export default class FavoriteService {
     }
 
     private validateRequestedFields(req: Request){
-        if(!req.body || !req.body.coinSymbol) throw new AppError("Informe a moeda a ser favoritada!", 422) 
+        if(!req.body || !req.body.coinSymbol || !req.body.coinName) throw new AppError("Informe a moeda a ser favoritada!", 422) 
+        if(!req.body.image) throw new AppError("Informe a imagem da moeda!", 422)        
     }
 }
