@@ -17,7 +17,7 @@ App.use(express.json());
 App.use("/api", routes);
 App.use(errorHandler);
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 App.listen(port, () => {
   console.log(`Rodando na porta ${port}`);
